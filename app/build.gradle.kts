@@ -49,4 +49,5 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(project(":library"))
+    implementation("com.github.bumptech.glide:glide:5.0.4")
 }
