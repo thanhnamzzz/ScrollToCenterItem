@@ -6,7 +6,8 @@ import android.view.View;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
- * Created by yarolegovich on 16.03.2017.
+ * Rebuild from DroidSky/DiscreteScrollView
+ * <a href="https://github.com/DroidSky/DiscreteScrollView">...</a>
  */
 public enum Orientation {
 

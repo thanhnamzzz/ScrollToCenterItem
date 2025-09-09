@@ -14,7 +14,8 @@ import lib.virgo.library.transform.ScrollItemTransformer;
 import lib.virgo.library.util.ScrollListenerAdapter;
 
 /**
- * Created by yarolegovich on 18.02.2017.
+ * Rebuild from DroidSky/DiscreteScrollView
+ * <a href="https://github.com/DroidSky/DiscreteScrollView">...</a>
  */
 @SuppressWarnings("unchecked")
 public class ScrollToCenterView extends RecyclerView {

@@ -6,7 +6,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import lib.virgo.library.ScrollToCenterView;
 
 /**
- * Created by yarolegovich on 16.03.2017.
+ * Rebuild from DroidSky/DiscreteScrollView
+ * <a href="https://github.com/DroidSky/DiscreteScrollView">...</a>
  */
 public class ScrollListenerAdapter<T extends RecyclerView.ViewHolder> implements ScrollToCenterView.ScrollStateChangeListener<T> {
 

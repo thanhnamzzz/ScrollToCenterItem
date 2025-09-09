@@ -3,7 +3,7 @@ package lib.virgo.library.transform
 import android.view.View
 
 /**
- * Created by yarolegovich on 02.03.2017.
+ * Rebuilt from [DroidSky/DiscreteScrollView](https://github.com/DroidSky/DiscreteScrollView)
  */
 interface ScrollItemTransformer {
     fun transformItem(item: View?, position: Float)

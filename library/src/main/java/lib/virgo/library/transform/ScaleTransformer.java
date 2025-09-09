@@ -5,7 +5,8 @@ import android.view.View;
 import androidx.annotation.FloatRange;
 
 /**
- * Created by yarolegovich on 03.03.2017.
+ * Rebuild from DroidSky/DiscreteScrollView
+ * <a href="https://github.com/DroidSky/DiscreteScrollView">...</a>
  */
 
 public class ScaleTransformer implements ScrollItemTransformer {

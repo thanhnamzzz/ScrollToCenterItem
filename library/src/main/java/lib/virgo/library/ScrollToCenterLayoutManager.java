@@ -20,7 +20,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import lib.virgo.library.transform.ScrollItemTransformer;
 
 /**
- * Created by yarolegovich on 17.02.2017.
+ * Rebuild from DroidSky/DiscreteScrollView
+ * <a href="https://github.com/DroidSky/DiscreteScrollView">...</a>
  */
 class ScrollToCenterLayoutManager extends RecyclerView.LayoutManager {
 

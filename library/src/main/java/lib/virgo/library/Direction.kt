@@ -1,7 +1,7 @@
 package lib.virgo.library
 
 /**
- * Created by yarolegovich on 16.03.2017.
+ * Rebuilt from [DroidSky/DiscreteScrollView](https://github.com/DroidSky/DiscreteScrollView)
  */
 internal enum class Direction {
     START {
