@@ -19,7 +19,7 @@ import com.bumptech.glide.request.target.Target
  * Created by yarolegovich on 08.03.2017.
  */
 class ForecastAdapter(private val data: MutableList<Forecast>) :
-	RecyclerView.Adapter<ForecastAdapter.ViewHolder?>() {
+	RecyclerView.Adapter<ForecastAdapter.ViewHolder>() {
 	private var parentRecycler: RecyclerView? = null
 
 	override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
@@ -69,14 +69,11 @@ class ForecastAdapter(private val data: MutableList<Forecast>) :
 
 	inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
 		View.OnClickListener {
-		val imageView: ImageView
-		val textView: TextView
+		val imageView: ImageView = itemView.findViewById(R.id.city_image)
+        val textView: TextView = itemView.findViewById(R.id.city_name)
 
-		init {
-			imageView = itemView.findViewById<ImageView>(R.id.city_image)
-			textView = itemView.findViewById<TextView>(R.id.city_name)
-
-			itemView.findViewById<View?>(R.id.container).setOnClickListener(this)
+        init {
+            itemView.findViewById<View>(R.id.container).setOnClickListener(this)
 		}
 
 		fun showText() {
@@ -85,11 +82,11 @@ class ForecastAdapter(private val data: MutableList<Forecast>) :
 			imageView.pivotX = imageView.width * 0.5f
 			imageView.pivotY = 0f
 			imageView.animate().scaleX(scale)
-				.withEndAction(Runnable {
-					textView.visibility = View.VISIBLE
-					imageView.setColorFilter(Color.BLACK)
-				})
-				.scaleY(scale).setDuration(200)
+				.withEndAction {
+                    textView.visibility = View.VISIBLE
+                    imageView.setColorFilter(Color.BLACK)
+                }
+                .scaleY(scale).setDuration(200)
 				.start()
 		}
 
@@ -107,7 +104,7 @@ class ForecastAdapter(private val data: MutableList<Forecast>) :
 		}
 
 		override fun onClick(v: View?) {
-			parentRecycler!!.smoothScrollToPosition(getAdapterPosition())
+			parentRecycler!!.smoothScrollToPosition(layoutPosition)
 		}
 	}
 }

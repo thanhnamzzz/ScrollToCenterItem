@@ -3,10 +3,11 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    `maven-publish`
 }
 
 android {
-    namespace = "lib.virgo.library"
+    namespace = "lib.virgo.lib_scrollcenteritem"
     compileSdk = 36
 
     defaultConfig {
@@ -37,8 +38,13 @@ android {
 }
 
 dependencies {
-
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
     implementation(libs.material)
+}
+
+publishing.publications {
+    create<MavenPublication>("release") {
+        afterEvaluate {
+            from(components["release"])
+        }
+    }
 }

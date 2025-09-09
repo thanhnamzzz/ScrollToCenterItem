@@ -1,9 +1,9 @@
-package lib.virgo.library
+package lib.virgo.lib_scrollcenteritem
 
 /**
  * Rebuilt from [DroidSky/DiscreteScrollView](https://github.com/DroidSky/DiscreteScrollView)
  */
-internal enum class Direction {
+enum class Direction {
     START {
         override fun applyTo(delta: Int): Int {
             return delta * -1

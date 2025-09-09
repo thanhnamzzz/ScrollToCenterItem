@@ -7,13 +7,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import io.virgo.scrolltocenteritem.databinding.ActivityMainBinding
-import lib.virgo.library.ScrollToCenterView
-import lib.virgo.library.transform.ScaleTransformer
-import kotlin.text.get
+import lib.virgo.lib_scrollcenteritem.callback.OnItemChangedListener
+import lib.virgo.lib_scrollcenteritem.callback.ScrollStateChangeListener
+import lib.virgo.lib_scrollcenteritem.transform.ScaleTransformer
 
 class MainActivity : AppCompatActivity(),
-    ScrollToCenterView.OnItemChangedListener<ForecastAdapter.ViewHolder>,
-    ScrollToCenterView.ScrollStateChangeListener<ForecastAdapter.ViewHolder> {
+    OnItemChangedListener<ForecastAdapter.ViewHolder>,
+    ScrollStateChangeListener<ForecastAdapter.ViewHolder> {
     private lateinit var binding: ActivityMainBinding
     private val foreCasts = WeatherStation.get().forecasts
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,7 +34,6 @@ class MainActivity : AppCompatActivity(),
             setItemTransitionTimeMillis(150)
             setItemTransformer(ScaleTransformer.Builder().setMinScale(0.5f).build())
         }
-
     }
 
     override fun onCurrentItemChanged(

@@ -1,4 +1,4 @@
-package lib.virgo.library;
+package lib.virgo.lib_scrollcenteritem;
 
 import android.content.Context;
 import android.graphics.Point;
@@ -12,18 +12,18 @@ import android.view.accessibility.AccessibilityEvent;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.view.accessibility.AccessibilityEventCompat;
-import androidx.core.view.accessibility.AccessibilityRecordCompat;
 import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 
-import lib.virgo.library.transform.ScrollItemTransformer;
+import lib.virgo.lib_scrollcenteritem.callback.Helper;
+import lib.virgo.lib_scrollcenteritem.callback.IScrollStateListener;
+import lib.virgo.lib_scrollcenteritem.transform.ScrollItemTransformer;
 
 /**
  * Rebuild from DroidSky/DiscreteScrollView
  * <a href="https://github.com/DroidSky/DiscreteScrollView">...</a>
  */
-class ScrollToCenterLayoutManager extends RecyclerView.LayoutManager {
+public class ScrollToCenterLayoutManager extends RecyclerView.LayoutManager {
 
     private static final String EXTRA_POSITION = "extra_position";
 
@@ -31,9 +31,9 @@ class ScrollToCenterLayoutManager extends RecyclerView.LayoutManager {
     private static final int DEFAULT_TIME_FOR_ITEM_SETTLE = 150;
 
     //This field will take value of all visible view's center points during the fill phase
-    private Point viewCenterIterator;
-    private Point recyclerCenter;
-    private Point currentViewCenter;
+    private final Point viewCenterIterator;
+    private final Point recyclerCenter;
+    private final Point currentViewCenter;
     private int childHalfWidth, childHalfHeight;
     private int extraLayoutSpace;
 
@@ -41,28 +41,28 @@ class ScrollToCenterLayoutManager extends RecyclerView.LayoutManager {
     private int scrollToChangeCurrent;
     private int currentScrollState;
 
-    private Orientation.Helper orientationHelper;
+    private Helper orientationHelper;
 
     private int scrolled;
     private int pendingScroll;
     private int currentPosition;
     private int pendingPosition;
 
-    private Context context;
+    private final Context context;
 
     private int timeForItemSettle;
     private int offscreenItems;
 
-    private SparseArray<View> detachedCache;
+    private final SparseArray<View> detachedCache;
 
     @NonNull
-    private final ScrollStateListener scrollStateListener;
+    private final IScrollStateListener iScrollStateListener;
     private ScrollItemTransformer itemTransformer;
 
     public ScrollToCenterLayoutManager(
             Context c,
-            @NonNull ScrollStateListener scrollStateListener,
-            @NonNull Orientation orientation) {
+            @NonNull IScrollStateListener IScrollStateListener,
+            @NonNull OrientationView orientation) {
         this.context = c;
         this.timeForItemSettle = DEFAULT_TIME_FOR_ITEM_SETTLE;
         this.pendingPosition = NO_POSITION;
@@ -71,9 +71,13 @@ class ScrollToCenterLayoutManager extends RecyclerView.LayoutManager {
         this.currentViewCenter = new Point();
         this.viewCenterIterator = new Point();
         this.detachedCache = new SparseArray<>();
-        this.scrollStateListener = scrollStateListener;
+        this.iScrollStateListener = IScrollStateListener;
         this.orientationHelper = orientation.createHelper();
-        setAutoMeasureEnabled(true);
+    }
+
+    @Override
+    public boolean isAutoMeasureEnabled() {
+        return true;
     }
 
     @Override
@@ -99,7 +103,7 @@ class ScrollToCenterLayoutManager extends RecyclerView.LayoutManager {
         applyItemTransformToChildren();
 
         if (isFirstOrEmptyLayout) {
-            scrollStateListener.onCurrentViewFirstLayout();
+            iScrollStateListener.onCurrentViewFirstLayout();
         }
     }
 
@@ -179,7 +183,9 @@ class ScrollToCenterLayoutManager extends RecyclerView.LayoutManager {
         detachedCache.clear();
         for (int i = 0; i < getChildCount(); i++) {
             View child = getChildAt(i);
-            detachedCache.put(getPosition(child), child);
+            if (child != null) {
+                detachedCache.put(getPosition(child), child);
+            }
         }
 
         for (int i = 0; i < detachedCache.size(); i++) {
@@ -196,7 +202,7 @@ class ScrollToCenterLayoutManager extends RecyclerView.LayoutManager {
     }
 
     @Override
-    public void onItemsAdded(RecyclerView recyclerView, int positionStart, int itemCount) {
+    public void onItemsAdded(@NonNull RecyclerView recyclerView, int positionStart, int itemCount) {
         if (currentPosition == NO_POSITION) {
             currentPosition = 0;
         } else if (currentPosition >= positionStart) {
@@ -205,7 +211,7 @@ class ScrollToCenterLayoutManager extends RecyclerView.LayoutManager {
     }
 
     @Override
-    public void onItemsRemoved(RecyclerView recyclerView, int positionStart, int itemCount) {
+    public void onItemsRemoved(@NonNull RecyclerView recyclerView, int positionStart, int itemCount) {
         if (getItemCount() == 0) {
             currentPosition = NO_POSITION;
         } else if (currentPosition >= positionStart) {
@@ -214,7 +220,7 @@ class ScrollToCenterLayoutManager extends RecyclerView.LayoutManager {
     }
 
     @Override
-    public void onItemsChanged(RecyclerView recyclerView) {
+    public void onItemsChanged(@NonNull RecyclerView recyclerView) {
         //notifyDataSetChanged() was called. We need to ensure that currentPosition is not out of bounds
         currentPosition = Math.min(Math.max(0, currentPosition), getItemCount() - 1);
     }
@@ -306,14 +312,14 @@ class ScrollToCenterLayoutManager extends RecyclerView.LayoutManager {
     @Override
     public void onScrollStateChanged(int state) {
         if (currentScrollState == RecyclerView.SCROLL_STATE_IDLE && currentScrollState != state) {
-            scrollStateListener.onScrollStart();
+            iScrollStateListener.onScrollStart();
         }
 
         if (state == RecyclerView.SCROLL_STATE_IDLE) {
             //Scroll is not finished until current view is centered
             boolean isScrollEnded = onScrollEnd();
             if (isScrollEnded) {
-                scrollStateListener.onScrollEnd();
+                iScrollStateListener.onScrollEnd();
             } else {
                 //Scroll continues and we don't want to set currentScrollState to STATE_IDLE,
                 //because this will then trigger .scrollStateListener.onScrollStart()
@@ -417,7 +423,7 @@ class ScrollToCenterLayoutManager extends RecyclerView.LayoutManager {
                     scrollToChangeCurrent - Math.abs(scrolled) :
                     scrollToChangeCurrent + Math.abs(scrolled);
         }
-        scrollStateListener.onIsBoundReachedFlagChange(isBoundReached);
+        iScrollStateListener.onIsBoundReachedFlagChange(isBoundReached);
         return allowedScroll;
     }
 
@@ -474,7 +480,7 @@ class ScrollToCenterLayoutManager extends RecyclerView.LayoutManager {
         requestLayout();
     }
 
-    public void setOrientation(Orientation orientation) {
+    public void setOrientation(OrientationView orientation) {
         orientationHelper = orientation.createHelper();
         removeAllViews();
         requestLayout();
@@ -485,12 +491,11 @@ class ScrollToCenterLayoutManager extends RecyclerView.LayoutManager {
     }
 
     @Override
-    public void onInitializeAccessibilityEvent(AccessibilityEvent event) {
+    public void onInitializeAccessibilityEvent(@NonNull AccessibilityEvent event) {
         super.onInitializeAccessibilityEvent(event);
         if (getChildCount() > 0) {
-            final AccessibilityRecordCompat record = AccessibilityEventCompat.asRecord(event);
-            record.setFromIndex(getPosition(getFirstChild()));
-            record.setToIndex(getPosition(getLastChild()));
+            event.setFromIndex(getPosition(getFirstChild()));
+            event.setToIndex(getPosition(getLastChild()));
         }
     }
 
@@ -523,7 +528,7 @@ class ScrollToCenterLayoutManager extends RecyclerView.LayoutManager {
 
     private void notifyScroll() {
         float position = -Math.min(Math.max(-1f, scrolled / (float) scrollToChangeCurrent), 1f);
-        scrollStateListener.onScroll(position);
+        iScrollStateListener.onScroll(position);
     }
 
     private boolean isInBounds(int itemPosition) {
@@ -565,18 +570,6 @@ class ScrollToCenterLayoutManager extends RecyclerView.LayoutManager {
                     orientationHelper.getPendingDx(pendingScroll),
                     orientationHelper.getPendingDy(pendingScroll));
         }
-    }
-
-    public interface ScrollStateListener {
-        void onIsBoundReachedFlagChange(boolean isBoundReached);
-
-        void onScrollStart();
-
-        void onScrollEnd();
-
-        void onScroll(float currentViewPosition);
-
-        void onCurrentViewFirstLayout();
     }
 
 }
