@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-  implementation("com.github.thanhnamzzz:ScrollToCenterItem:Tag")
+  implementation("com.github.thanhnamzzz:ScrollToCenterItem:last-version")
 }
 ```
 
