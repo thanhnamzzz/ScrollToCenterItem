@@ -10,8 +10,7 @@
     <lib.virgo.lib_scrollcenteritem.ScrollToCenterView
         android:id="@+id/city_picker"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="100dp"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        android:layout_height="match_parent"
+        app:stc_orientation="horizontal" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

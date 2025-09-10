@@ -9,9 +9,7 @@ import lib.virgo.lib_scrollcenteritem.callback.OnItemChangedListener
 import lib.virgo.lib_scrollcenteritem.callback.ScrollStateChangeListener
 import androidx.core.content.withStyledAttributes
 import lib.virgo.lib_scrollcenteritem.callback.IScrollStateListener
-import lib.virgo.lib_scrollcenteritem.callback.ScrollListener
 import lib.virgo.lib_scrollcenteritem.transform.ScrollItemTransformer
-import lib.virgo.lib_scrollcenteritem.util.ScrollListenerAdapter
 
 /**
  * Rebuilt from [DroidSky/DiscreteScrollView](https://github.com/DroidSky/DiscreteScrollView)
@@ -35,8 +33,8 @@ class ScrollToCenterView @JvmOverloads constructor(
         context.withStyledAttributes(attrs, R.styleable.ScrollToCenterView) {
             orientation = getInt(R.styleable.ScrollToCenterView_stc_orientation, DEFAULT_ORIENTATION)
         }
-        val o = if (orientation == 1) OrientationView.VERTICAL else OrientationView.HORIZONTAL
-        layoutManager = ScrollToCenterLayoutManager(context, ScrollStateListener(), o)
+        val orientationView = if (orientation == 1) OrientationView.VERTICAL else OrientationView.HORIZONTAL
+        layoutManager = ScrollToCenterLayoutManager(context, ScrollStateListener(), orientationView)
         super.setLayoutManager(layoutManager)
     }
 
@@ -82,6 +80,7 @@ class ScrollToCenterView @JvmOverloads constructor(
         layoutManager.setOrientation(orientation)
     }
 
+    /** Reserve extra space equal to (childSize * count) on each side of the view */
     fun setOffscreenItems(items: Int) {
         layoutManager.setOffscreenItems(items)
     }
@@ -90,9 +89,9 @@ class ScrollToCenterView @JvmOverloads constructor(
         scrollStateChangeListener = listener
     }
 
-    fun setScrollListener(scrollListener: ScrollListener<ViewHolder>) {
-        setScrollStateChangeListener(ScrollListenerAdapter(scrollListener))
-    }
+//    fun setScrollListener(scrollListener: ScrollListener<ViewHolder>) {
+//        setScrollStateChangeListener(ScrollListenerAdapter(scrollListener))
+//    }
     private var onItemChangedListener: OnItemChangedListener<ViewHolder>? = null
     fun setOnItemChangedListener(listener: OnItemChangedListener<ViewHolder>?) {
         onItemChangedListener = listener

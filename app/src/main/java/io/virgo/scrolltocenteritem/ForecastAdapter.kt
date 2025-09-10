@@ -18,7 +18,7 @@ import com.bumptech.glide.request.target.Target
 /**
  * Created by yarolegovich on 08.03.2017.
  */
-class ForecastAdapter(private val data: MutableList<Forecast>) :
+class ForecastAdapter(private val data: MutableList<Forecast>, private val listener: IForecastListener) :
 	RecyclerView.Adapter<ForecastAdapter.ViewHolder>() {
 	private var parentRecycler: RecyclerView? = null
 
@@ -38,7 +38,7 @@ class ForecastAdapter(private val data: MutableList<Forecast>) :
 		val forecast = data[position]
 		Glide.with(holder.itemView.context)
 			.load(forecast.cityIcon) //                .listener(new TintOnLoad(holder.imageView, iconTint))
-			.listener(object : RequestListener<Drawable?>{
+			.listener(object : RequestListener<Drawable?> {
 				override fun onLoadFailed(
 					e: GlideException?,
 					model: Any?,
@@ -70,10 +70,10 @@ class ForecastAdapter(private val data: MutableList<Forecast>) :
 	inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
 		View.OnClickListener {
 		val imageView: ImageView = itemView.findViewById(R.id.city_image)
-        val textView: TextView = itemView.findViewById(R.id.city_name)
+		val textView: TextView = itemView.findViewById(R.id.city_name)
 
-        init {
-            itemView.findViewById<View>(R.id.container).setOnClickListener(this)
+		init {
+			itemView.findViewById<View>(R.id.container).setOnClickListener(this)
 		}
 
 		fun showText() {
@@ -83,10 +83,10 @@ class ForecastAdapter(private val data: MutableList<Forecast>) :
 			imageView.pivotY = 0f
 			imageView.animate().scaleX(scale)
 				.withEndAction {
-                    textView.visibility = View.VISIBLE
-                    imageView.setColorFilter(Color.BLACK)
-                }
-                .scaleY(scale).setDuration(200)
+					textView.visibility = View.VISIBLE
+					imageView.setColorFilter(Color.BLACK)
+				}
+				.scaleY(scale).setDuration(200)
 				.start()
 		}
 
@@ -105,6 +105,7 @@ class ForecastAdapter(private val data: MutableList<Forecast>) :
 
 		override fun onClick(v: View?) {
 			parentRecycler!!.smoothScrollToPosition(layoutPosition)
+			listener.onItemClick(layoutPosition)
 		}
 	}
 }
